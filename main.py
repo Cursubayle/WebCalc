@@ -15,8 +15,6 @@ async def handle_submit(request):
     """обрабатыеваем форму"""
     session = await aiohttp_session.get_session(request)
     data = await request.post()
-    if data.get('clear'):
-        session['tmp'] , session['values'] = '',[]
     try:
         if Token(session.get('tmp') + data.get('value')):
             print(type(session.get('tmp')))
