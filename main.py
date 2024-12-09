@@ -15,24 +15,25 @@ async def handle_submit(request):
     """обрабатыеваем форму"""
     session = await aiohttp_session.get_session(request)
     data = await request.post()
+    if data.get('clear'):
+        session['tmp'] , session['values'] = '',[]
     try:
-        print(session.get('values')[-1], data.get('value'))
-        if Token(session.get('values')[-1] + data.get('value')):
-            print(' if ')
-            session['values'][-1] += 'a'
-            # session['values'][-1] + 
-            # (data.get('value'))
+        if Token(session.get('tmp') + data.get('value')):
+            print(type(session.get('tmp')))
+            session['tmp'] = session.get('tmp') + data.get('value')
         else:
-            print('else')
+            session['values'] += [session.get('tmp')]
+            session['tmp'] = data.get('value')
+            print('else',session.get('values'),[session.get('tmp')])
     except KeyError:
         print('key')
-        session['values'] = list(data.get('value'))
+        session['tmp'] = data.get('value')
     except TypeError:
         print('type')
-        session['values'] = list(data.get('value'))
+        session['tmp'] = data.get('value')
     context = {
         'op':variables.op}
-    print(session.get('values'))
+    print(session.keys())
     return web.Response(text=template.render(context),content_type='text/html')
 
 app = web.Application()
